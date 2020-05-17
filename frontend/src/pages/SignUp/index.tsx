@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FiUser ,FiMail, FiLock, FiArrowLeft } from 'react-icons/fi';
+import { Form } from '@unform/web';
 
 import logo from '../../assets/logo.svg';
 
@@ -9,6 +10,11 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 const SignUp: React.FC = function() {
+
+    const handleSubmit = useCallback(function(data): void {
+        console.log(data);
+    }, []);
+
     return (
         <Container>
 
@@ -17,7 +23,7 @@ const SignUp: React.FC = function() {
             <Content>
                 <img src={ logo } alt="GoBarber"/>
 
-                <form>
+                <Form onSubmit = { handleSubmit} >
 
                     <h1> Faça seu cadastro </h1>
 
@@ -27,7 +33,7 @@ const SignUp: React.FC = function() {
 
                     <Button type="submit"> Cadastrar </Button>
 
-                </form>
+                </Form>
 
                 <a href="create-account">
                     <FiArrowLeft size = { 16 } />
