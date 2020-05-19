@@ -1,0 +1,16 @@
+import React from 'react';
+
+import { AuthProvider } from './Auth';
+import { ToastProvider } from './Toats';
+
+const AppProvider: React.FC = function ({ children }) {
+    return (
+        <AuthProvider>
+            <ToastProvider>
+                { children }
+            </ToastProvider>
+        </AuthProvider>
+    );
+};
+
+export default AppProvider;
