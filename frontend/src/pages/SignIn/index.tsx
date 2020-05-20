@@ -3,6 +3,7 @@ import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import { Link, useHistory } from 'react-router-dom';
 
 import getValidationError from '../../utils/getValidationError';
 
@@ -11,7 +12,7 @@ import { useToast } from '../../hooks/Toats';
 
 import logo from '../../assets/logo.svg';
 
-import { Container, Content, Background } from './styles';
+import { Container, Content, Background, AnimationContent } from './styles';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -27,6 +28,7 @@ const SignIn: React.FC = function() {
 
     const { signIn } = useAuth();
     const { addToast } = useToast();
+    const history = useHistory();
 
     const handleSubmit = useCallback(async function(data: FormData): Promise<void> {
         try {
@@ -44,12 +46,13 @@ const SignIn: React.FC = function() {
                 password: data.password,
             });
 
+            history.push('/dashboard');
+
         } catch (error) {
             if (error instanceof Yup.ValidationError) {
                 const errors = getValidationError(error);
                 formRef.current?.setErrors(errors);
             }
-
             addToast({
                 type: 'error',
                 title: 'Ocorreu um erro na autenticação',
@@ -57,30 +60,32 @@ const SignIn: React.FC = function() {
             });
 
         }
-    }, [ signIn, addToast ]);
+    }, [ signIn, addToast, history ]);
 
     return (
         <Container>
 
             <Content>
-                <img src={ logo } alt="GoBarber"/>
+                <AnimationContent>
+                    <img src={ logo } alt="GoBarber"/>
 
-                <Form ref = { formRef } onSubmit = { handleSubmit }>
+                    <Form ref = { formRef } onSubmit = { handleSubmit }>
 
-                    <h1> Faça seu logon </h1>
+                        <h1> Faça seu logon </h1>
 
-                    <Input name = "email" placeholder = "E-mail" icon = { FiMail } />
-                    <Input name = "password" type="password" placeholder="Senha" icon = { FiLock } />
+                        <Input name = "email" placeholder = "E-mail" icon = { FiMail } />
+                        <Input name = "password" type="password" placeholder="Senha" icon = { FiLock } />
 
-                    <Button type="submit"> Entrar </Button>
+                        <Button type="submit"> Entrar </Button>
 
-                    <a href="forgot"> Esqueci minha senha </a>
-                </Form>
+                        <a href="forgot"> Esqueci minha senha </a>
+                    </Form>
 
-                <a href="create-account">
-                    <FiLogIn size = { 16 } />
-                    Criar conta
-                </a>
+                    <Link to="/signup">
+                        <FiLogIn size = { 16 } />
+                        Criar conta
+                    </Link>
+                </AnimationContent>
             </Content>
 
             <Background />
