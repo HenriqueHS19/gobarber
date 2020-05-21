@@ -1,7 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Image, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -10,7 +12,15 @@ import logo from '../../assets/logo.png';
 
 import { Container, Title, BtnBackLogon, TxtBack } from './styles';
 
+interface FormData {
+    name: string;
+    email: string;
+    password: string;
+}
+
 const SignUp: React.FC = function () {
+
+    const formRef = useRef<FormHandles>(null);
 
     const navigation = useNavigation();
 
@@ -21,11 +31,15 @@ const SignUp: React.FC = function () {
         return undefined;
     }, []);
 
+    const handleSubmit = useCallback(function (data: FormData) {
+        console.log(data);
+    }, []);
+
     return (
         <>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={platform()} enabled >
 
-                <ScrollView keyboardShouldPersistTaps = "handled" contentContainerStyle = {{ flex: 1 }} >
+                <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flex: 1 }} >
                     <Container>
                         <Image source={logo} />
 
@@ -33,11 +47,15 @@ const SignUp: React.FC = function () {
                             <Title> Crie sua conta </Title>
                         </View>
 
-                        <Input name="name" icon="user" placeholder="Nome" />
-                        <Input name="email" icon="mail" placeholder="E-mail" />
-                        <Input name="password" icon="lock" placeholder="Senha" />
+                        <Form ref = { formRef } onSubmit = { handleSubmit }>
+                            <Input name="name" icon="user" placeholder="Nome" />
+                            <Input name="email" icon="mail" placeholder="E-mail" />
+                            <Input name="password" icon="lock" placeholder="Senha" />
 
-                        <Button> Cadastrar </Button>
+                            <Button onPress = { function() {
+                                formRef.current?.submitForm();
+                            }}> Cadastrar </Button>
+                        </Form>
 
                     </Container>
                 </ScrollView>
@@ -45,7 +63,7 @@ const SignUp: React.FC = function () {
             </KeyboardAvoidingView>
 
             <BtnBackLogon
-                onPress = { function() {
+                onPress={function () {
                     navigation.navigate('SignIn');
                 }}
             >

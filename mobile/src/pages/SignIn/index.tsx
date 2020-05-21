@@ -1,7 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Image, View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -10,7 +12,14 @@ import logo from '../../assets/logo.png';
 
 import { Container, Title, BtnForgot, TxtForgot, BtnCreateAccount, TxtCreate } from './styles';
 
+interface FormData {
+    email: string;
+    password: string;
+}
+
 const SignIn: React.FC = function () {
+
+    const formRef = useRef<FormHandles>(null);
 
     const navigation = useNavigation();
 
@@ -21,11 +30,15 @@ const SignIn: React.FC = function () {
         return undefined;
     }, []);
 
+    const handleSubmit = useCallback(function(data: FormData) {
+        console.log(data);
+    }, []);
+
     return (
         <>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={platform()} enabled >
 
-                <ScrollView keyboardShouldPersistTaps = "handled" contentContainerStyle = {{ flex: 1 }} >
+                <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flex: 1 }} >
                     <Container>
                         <Image source={logo} />
 
@@ -33,10 +46,16 @@ const SignIn: React.FC = function () {
                             <Title> Faça seu logon </Title>
                         </View>
 
-                        <Input name="email" icon="mail" placeholder="E-mail" />
-                        <Input name="password" icon="lock" placeholder="Senha" />
+                        <Form ref = { formRef } onSubmit = { handleSubmit } >
+                            <Input name="email" icon="mail" placeholder="E-mail" />
+                            <Input name="password" icon="lock" placeholder="Senha" />
 
-                        <Button> Entrar </Button>
+                            <Button onPress = { function() {
+                                formRef.current?.submitForm();
+                            }}>
+                                Entrar
+                            </Button>
+                        </Form>
 
                         <BtnForgot>
                             <TxtForgot> Esqueci minha senha </TxtForgot>
@@ -47,7 +66,7 @@ const SignIn: React.FC = function () {
             </KeyboardAvoidingView>
 
             <BtnCreateAccount
-                onPress = { function() {
+                onPress={function () {
                     navigation.navigate('SignUp');
                 }}
             >
