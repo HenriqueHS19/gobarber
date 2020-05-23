@@ -7,6 +7,7 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
 import getValidationError from '../../utils/getValidationError';
+import api from '../../services/api';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -49,6 +50,15 @@ const SignUp: React.FC = function () {
 
             await schema.validate(data, { abortEarly: false });
 
+            await api.post('/users', data);
+
+            Alert.alert(
+                'Cadastro realizado com sucesso',
+                'Você já pode fazer logon no GoBarber'
+            );
+
+            navigation.goBack();
+
         } catch (error) {
             if (error instanceof Yup.ValidationError) {
                 const errors = getValidationError(error);
@@ -56,9 +66,12 @@ const SignUp: React.FC = function () {
                 return;
             }
 
-            Alert.alert('Erro no cadastro', 'Ocorreu um erro no cadastro, tente novamente.');
+            Alert.alert(
+                'Erro no cadastro',
+                'Ocorreu um erro no cadastro, tente novamente.'
+            );
         }
-    }, []);
+    }, [ navigation ]);
 
     return (
         <>
