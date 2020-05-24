@@ -6,10 +6,10 @@ import cors from 'cors';
 
 // files
 import routes from './routes';
-import './database';
-import uploadConfig from './config/upload';
+import '@shared/infra/typeorm';
+import uploadConfig from '@config/upload';
 
-import AppError from './errors/AppError';
+import AppError from '@shared/errors/AppError';
 
 const app = express();
 

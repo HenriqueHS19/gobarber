@@ -4,9 +4,9 @@ import { parseISO } from 'date-fns';
 import { getCustomRepository } from 'typeorm';
 
 // files
-import AppointmentsRepository from '../repositories/AppointmentsRepostirory';
-import CreateAppointmentService from '../services/CreateAppointmentService';
-import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+import AppointmentsRepository from '@modules/appointments/repositories/AppointmentsRepostirory';
+import CreateAppointmentService from '@modules/appointments/services/CreateAppointmentService';
+import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 
 const routes = Router();
 
