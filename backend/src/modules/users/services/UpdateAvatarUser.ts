@@ -1,23 +1,30 @@
-import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs';
+import { injectable, inject } from 'tsyringe';
 
+import IUsersRepository from '../repositories/IUsersRepository';
 import User from '@modules/users/infra/typeorm/entities/Users';
 import uploadConfig from '@config/upload';
 
 import AppError from '@shared/errors/AppError';
 
-interface Request {
+interface IRequest {
     userId: string;
     avatarFilename: string;
 }
 
+@injectable()
 export default class UpdateAvatarUser {
-    public async execute({ userId, avatarFilename }: Request): Promise <User> {
 
-        const repository = getRepository(User);
+    private repository: IUsersRepository;
 
-        const user = await repository.findOne(userId);
+    constructor(@inject('UsersRepository') repository: IUsersRepository) {
+        this.repository = repository;
+    }
+
+    public async execute({ userId, avatarFilename }: IRequest): Promise <User> {
+
+        const user = await this.repository.findById(userId);
 
         if (!user) {
             throw new AppError('Only authenticated users can chaged avatar.', 401);
@@ -35,7 +42,7 @@ export default class UpdateAvatarUser {
 
         user.avatar = avatarFilename;
 
-        await repository.save(user);
+        await this.repository.save(user)
 
         return user;
     }
